@@ -1,7 +1,7 @@
-redisque
-========
+Heigh Ho!
+=========
 
-A simple redis-backed message queue.
+A redis-backed message/job queue.
 
-[![build status](https://secure.travis-ci.org/cpsubrian/redisque.png)](http://travis-ci.org/cpsubrian/redisque)
+[![build status](https://secure.travis-ci.org/cpsubrian/node-heigh-ho.png)](http://travis-ci.org/cpsubrian/node-heigh-ho)
 
