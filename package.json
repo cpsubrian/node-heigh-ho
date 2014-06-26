@@ -4,10 +4,12 @@
   "description": "A redis-backed message/job queue.",
   "main": "heigh-ho.js",
   "dependencies": {
+    "idgen": "^2.0.2",
     "lodash": "^2.4.1"
   },
   "devDependencies": {
-    "mocha": "*"
+    "mocha": "*",
+    "redis": "^0.10.3"
   },
   "scripts": {
     "test": "make test"
