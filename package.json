@@ -1,0 +1,23 @@
+{
+  "name": "heigh-ho",
+  "version": "0.0.1",
+  "description": "A redis-backed message/job queue.",
+  "main": "heigh-ho.js",
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cpsubrian/node-heigh-ho.git"
+  },
+  "homepage": "https://github.com/cpsubrian/node-heigh-ho",
+  "author": "Brian Link <cpsubrian@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cpsubrian/node-heigh-ho/issues"
+  }
+}
