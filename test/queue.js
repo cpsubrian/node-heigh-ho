@@ -41,8 +41,12 @@ describe('Queue', function () {
   describe('methods', function () {
     var queue;
 
-    beforeEach(function () {
+    beforeEach(function (done) {
       queue = heighho('test', {client: redis.createClient()});
+      queue.on('ready', done);
+    });
+    afterEach(function (done) {
+      queue.close(done);
     });
 
     it('can generate keys', function () {
@@ -53,6 +57,21 @@ describe('Queue', function () {
     it('can generate unique keys', function () {
       var key = queue.uniqueKey('a', 'b', 'c');
       assert.equal(key, queue.prefix + [queue.name, queue.id, 'a', 'b', 'c'].join(':'));
+    });
+
+    it('can close a queue', function (done) {
+      assert(queue.client.connected);
+      queue.close(function () {
+        assert(queue.client.connected === false);
+        done();
+      });
+    });
+
+    it('cannot override the processing handler', function () {
+      queue.process(function () {});
+      assert.throws(function () {
+        queue.process(function () {});
+      }, /one processor/);
     });
   });
 
