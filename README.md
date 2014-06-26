@@ -5,6 +5,8 @@ A redis-backed message/job queue. API inspired by `bull`.
 
 [![build status](https://secure.travis-ci.org/cpsubrian/node-heigh-ho.png)](http://travis-ci.org/cpsubrian/node-heigh-ho)
 
+![Hard Working Little People](https://camo.githubusercontent.com/dfda20e32d2bf70ff3e8070239c46e7b9101fad1/687474703a2f2f7777772e77616765686f7572696e7369676874732e636f6d2f4865696768253230486f2e6a7067)
+
 Example
 -------
 
