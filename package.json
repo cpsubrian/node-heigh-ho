@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "A redis-backed message/job queue.",
   "main": "heigh-ho.js",
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^2.4.1"
+  },
   "devDependencies": {
     "mocha": "*"
   },
