@@ -77,10 +77,10 @@ describe('Queue', function () {
   describe('processing', function () {
     var queue, job;
 
-    before(function (done) {
+    beforeEach(function (done) {
       queue = createTestQueue(done);
     });
-    after(function (done) {
+    afterEach(function (done) {
       destroyTestQueue(queue, done);
     });
 
@@ -91,6 +91,19 @@ describe('Queue', function () {
         queue.load(job.id, function (err, loaded) {
           assert.ifError(err);
           assert.equal(loaded.id, job.id);
+          done();
+        });
+      });
+    });
+
+    it('can count the number of pending jobs', function (done) {
+      job = queue.add('job1');
+      job = queue.add('job2');
+      job = queue.add('job3');
+      job.on('pending', function () {
+        queue.count(function (err, count) {
+          assert.ifError(err);
+          assert.equal(count, 3);
           done();
         });
       });
