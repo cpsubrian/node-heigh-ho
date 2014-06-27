@@ -96,18 +96,5 @@ describe('Queue', function () {
       });
     });
 
-    it('can timeout on the job callback', function (done) {
-      job = queue.add('job2', {timeout: 100});
-      queue.once('error', function (err) {
-        // Ignore timeout err.
-        if (!err.message.match(/timed out/)) {
-          assert.ifError(err);
-        }
-      });
-      job.on('error', function (err) {
-        assert(err.message.match(/timed out/));
-        done();
-      });
-    });
   });
 });
