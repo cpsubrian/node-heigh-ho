@@ -75,7 +75,7 @@ describe('Queue', function () {
   });
 
   describe('processing', function () {
-    var queue;
+    var queue, job;
 
     before(function (done) {
       queue = createTestQueue(done);
@@ -85,7 +85,7 @@ describe('Queue', function () {
     });
 
     it('can create and load a job', function (done) {
-      var job = queue.add('job1');
+      job = queue.add('job1');
       job.on('pending', function () {
         assert(typeof job.id !== 'undefined');
         queue.load(job.id, function (err, loaded) {
@@ -97,24 +97,17 @@ describe('Queue', function () {
     });
 
     it('can timeout on the job callback', function (done) {
-      var job = queue.add('job2', {timeout: 100}, function (err) {
-        assert(err.message.match(/timeout/));
-        done();
-      });
-    });
-
-    it('only calls the job callback once', function (done) {
-      var calls = 0;
-      var job = queue.add('job3', {timeout: 100}, function (err) {
-        calls++;
-        if (calls > 1) {
-          done(new Error('Job callback called more than once'));
+      job = queue.add('job2', {timeout: 100});
+      queue.once('error', function (err) {
+        // Ignore timeout err.
+        if (!err.message.match(/timed out/)) {
+          assert.ifError(err);
         }
       });
-      job.emit('end');
-      setTimeout(function () {
-        if (calls === 1) done();
-      }, 150);
+      job.on('error', function (err) {
+        assert(err.message.match(/timed out/));
+        done();
+      });
     });
   });
 });
