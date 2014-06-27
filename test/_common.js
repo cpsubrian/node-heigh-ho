@@ -1,9 +1,9 @@
 heighho = require('../');
 assert = require('assert');
-util = require('util');
 redis = require('redis');
-idgen = require('idgen');
-exec = require('child_process').exec;
+
+var idgen = require('idgen');
+var exec = require('child_process').exec;
 
 createTestQueue = function (done) {
   var queue = heighho(idgen(), {

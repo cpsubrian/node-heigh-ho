@@ -4,6 +4,7 @@
   "description": "A redis-backed message/job queue.",
   "main": "heigh-ho.js",
   "dependencies": {
+    "hydration": "^0.5.0",
     "idgen": "^2.0.2",
     "lodash": "^2.4.1"
   },

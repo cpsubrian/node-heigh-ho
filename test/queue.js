@@ -83,5 +83,24 @@ describe('Queue', function () {
     after(function (done) {
       destroyTestQueue(queue, done);
     });
+
+    it('can create and load a job', function (done) {
+      var job = queue.add('job1');
+      job.on('pending', function () {
+        assert(typeof job.id !== 'undefined');
+        queue.load(job.id, function (err, loaded) {
+          assert.ifError(err);
+          assert.equal(loaded.id, job.id);
+          done();
+        });
+      });
+    });
+
+    it('can timeout on the job callback', function (done) {
+      var job = queue.add('job2', {timeout: 100}, function (err) {
+        assert(err.message.match(/timeout/));
+        done();
+      });
+    });
   });
 });
