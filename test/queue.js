@@ -109,5 +109,21 @@ describe('Queue', function () {
       });
     });
 
+    it('can empty the queue', function (done) {
+      job = queue.add('job1');
+      job = queue.add('job2');
+      job = queue.add('job3');
+      job.on('pending', function () {
+        queue.empty(function (err) {
+          assert.ifError(err);
+          queue.count(function (err, count) {
+            assert.ifError(err);
+            assert.equal(count, 0);
+            done();
+          });
+        });
+      });
+    });
+
   });
 });
