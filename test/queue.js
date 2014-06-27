@@ -1,5 +1,3 @@
-var redis = require('redis');
-
 describe('Queue', function () {
 
   describe('instantiation', function () {
@@ -42,11 +40,10 @@ describe('Queue', function () {
     var queue;
 
     beforeEach(function (done) {
-      queue = heighho('test', {client: redis.createClient()});
-      queue.on('ready', done);
+      queue = createTestQueue(done);
     });
     afterEach(function (done) {
-      queue.close(done);
+      destroyTestQueue(queue);
     });
 
     it('can generate keys', function () {
@@ -67,12 +64,24 @@ describe('Queue', function () {
       });
     });
 
-    it('cannot override the processing handler', function () {
+    it('cannot provide more than one processing handler', function () {
       queue.process(function () {});
       assert.throws(function () {
         queue.process(function () {});
       }, /one processor/);
     });
+
+    it('toJSON() returns the queue properties');
   });
 
+  describe('processing', function () {
+    var queue;
+
+    before(function (done) {
+      queue = createTestQueue(done);
+    });
+    after(function (done) {
+      destroyTestQueue(done);
+    });
+  });
 });

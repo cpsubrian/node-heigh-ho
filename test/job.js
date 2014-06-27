@@ -1,5 +1,7 @@
 var Job = heighho.Job;
 
 describe('Job', function () {
-  it('works');
+  describe('methods', function () {
+    it('toJSON() returns the job properties');
+  });
 });

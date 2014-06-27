@@ -2,8 +2,11 @@ var Queue = require('./lib/queue')
   , Job = require('./lib/job')
   , _ = require('lodash');
 
+module.exports = createQueueOrFactory;
+module.exports.Queue = Queue;
+module.exports.Job = Job;
 
-module.exports = function (name, defaults) {
+function createQueueOrFactory (name, defaults) {
   if (typeof name === 'undefined' && typeof defaults === 'undefined') {
     throw new Error('missing name or options for heigh-ho factory');
   }
@@ -20,7 +23,4 @@ module.exports = function (name, defaults) {
       return module.exports(name, _.extend({}, defaults, options || {}));
     };
   }
-};
-
-module.exports.Queue = Queue;
-module.exports.Job = Job;
+}
