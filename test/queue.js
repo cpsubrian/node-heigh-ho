@@ -43,7 +43,7 @@ describe('Queue', function () {
       queue = createTestQueue(done);
     });
     afterEach(function (done) {
-      destroyTestQueue(queue);
+      destroyTestQueue(queue, done);
     });
 
     it('can generate keys', function () {
@@ -81,7 +81,7 @@ describe('Queue', function () {
       queue = createTestQueue(done);
     });
     after(function (done) {
-      destroyTestQueue(done);
+      destroyTestQueue(queue, done);
     });
   });
 });
