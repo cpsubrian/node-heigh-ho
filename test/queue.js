@@ -102,5 +102,19 @@ describe('Queue', function () {
         done();
       });
     });
+
+    it('only calls the job callback once', function (done) {
+      var calls = 0;
+      var job = queue.add('job3', {timeout: 100}, function (err) {
+        calls++;
+        if (calls > 1) {
+          done(new Error('Job callback called more than once'));
+        }
+      });
+      job.emit('end');
+      setTimeout(function () {
+        if (calls === 1) done();
+      }, 150);
+    });
   });
 });
