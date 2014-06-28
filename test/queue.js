@@ -177,7 +177,6 @@ describe('Queue', function () {
         // Make sure new items get paused.
         function (next) {
           job = queue.add('job4');
-          job = queue.add('job5');
           job.on('added', function (status) {
             assert.equal(status, 'paused');
             queue.count('pending', function (err, count) {
@@ -185,12 +184,44 @@ describe('Queue', function () {
               assert.equal(count, 0);
               queue.count('paused', function (err, count) {
                 assert.ifError(err);
+                assert.equal(count, 4);
+                next();
+              });
+            });
+          });
+        },
+        // Resume the quque.
+        function (next) {
+          queue.resume(next);
+        },
+        // Count pending items.
+        function (next) {
+          queue.count('paused', function (err, count) {
+            assert.ifError(err);
+            assert.equal(count, 0);
+            queue.count('pending', function (err, count) {
+              assert.ifError(err);
+              assert.equal(count, 4);
+              next();
+            });
+          });
+        },
+        // Make sure new items get added to pending.
+        function (next) {
+          job = queue.add('job6');
+          job.on('added', function (status) {
+            assert.equal(status, 'pending');
+            queue.count('paused', function (err, count) {
+              assert.ifError(err);
+              assert.equal(count, 0);
+              queue.count('pending', function (err, count) {
+                assert.ifError(err);
                 assert.equal(count, 5);
                 next();
               });
             });
           });
-        }
+        },
       ], function (err) {
         assert.ifError(err);
         done();
