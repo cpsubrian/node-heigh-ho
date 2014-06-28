@@ -216,5 +216,11 @@ describe('Queue', function () {
       });
     });
 
+    it('can process items added to the queue', function (done) {
+      queue.process(function (job, cb) {
+        cb();
+      });
+      done();
+    });
   });
 });
