@@ -1,6 +1,5 @@
 heighho = require('../');
 assert = require('assert');
-redis = require('redis');
 async = require('async');
 
 var idgen = require('idgen');
@@ -8,7 +7,6 @@ var exec = require('child_process').exec;
 
 createTestQueue = function (done) {
   var queue = heighho(idgen(), {
-    client: redis.createClient(),
     prefix: 'heigh-ho-test'
   });
   queue.on('ready', done);

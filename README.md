@@ -15,8 +15,8 @@ The basic usage example below should get you started.
 ```js
 // Create a queue.
 var heighho = require('heigh-ho')
-  , redis = require('redis').createClient()
-  , queue = heighho('my:job:name', {client: redis});
+  , redisClient = require('haredis').createClient()
+  , queue = heighho('my:job:name', {client: redisClient});
 
 // Process a job.
 queue.process(function (job, done) {
