@@ -1,6 +1,7 @@
 heighho = require('../');
 assert = require('assert');
 redis = require('redis');
+async = require('async');
 
 var idgen = require('idgen');
 var exec = require('child_process').exec;

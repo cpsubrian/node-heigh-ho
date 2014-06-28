@@ -86,7 +86,8 @@ describe('Queue', function () {
 
     it('can create and load a job', function (done) {
       job = queue.add('job1');
-      job.on('pending', function () {
+      job.on('added', function (status) {
+        assert.equal(status, 'pending');
         assert(typeof job.id !== 'undefined');
         queue.load(job.id, function (err, loaded) {
           assert.ifError(err);
@@ -100,7 +101,7 @@ describe('Queue', function () {
       job = queue.add('job1');
       job = queue.add('job2');
       job = queue.add('job3');
-      job.on('pending', function () {
+      job.on('added', function () {
         queue.count(function (err, count) {
           assert.ifError(err);
           assert.equal(count, 3);
@@ -113,7 +114,7 @@ describe('Queue', function () {
       job = queue.add('job1');
       job = queue.add('job2');
       job = queue.add('job3');
-      job.on('pending', function () {
+      job.on('added', function (status) {
         queue.empty(function (err) {
           assert.ifError(err);
           queue.count(function (err, count) {
@@ -122,6 +123,77 @@ describe('Queue', function () {
             done();
           });
         });
+      });
+    });
+
+    it('can get the status of the queue', function (done) {
+      queue.status(function (err, status) {
+        assert.ifError(err);
+        assert.equal(status, 'active');
+        done();
+      });
+    });
+
+    it('can pause and resume the queue', function (done) {
+      async.series([
+        // Add some items.
+        function (next) {
+          job = queue.add('job1');
+          job = queue.add('job2');
+          job = queue.add('job3');
+          job.on('added', function (status) {
+            assert.equal(status, 'pending');
+            next();
+          });
+        },
+        // Pause it.
+        function (next) {
+          queue.pause(next);
+        },
+        // Count pending items.
+        function (next) {
+          queue.count('pending', function (err, count) {
+            if (err) return next(err);
+            assert.equal(count, 0);
+            next();
+          });
+        },
+        // Count paused items.
+        function (next) {
+          queue.count('paused', function (err, count) {
+            if (err) return next(err);
+            assert.equal(count, 3);
+            queue.status(function (err, status) {
+              assert.ifError(err);
+              assert.equal(status, 'paused');
+              next();
+            });
+          });
+        },
+        // Make sure redundantly calling pause doesn't cause any problems.
+        function (next) {
+          queue.pause(next);
+        },
+        // Make sure new items get paused.
+        function (next) {
+          job = queue.add('job4');
+          job = queue.add('job5');
+          job.on('added', function (status) {
+            assert.equal(status, 'paused');
+            queue.count('pending', function (err, count) {
+              assert.ifError(err);
+              assert.equal(count, 0);
+              queue.count('paused', function (err, count) {
+                assert.ifError(err);
+                assert.equal(count, 5);
+                next();
+              });
+            });
+          });
+        }
+      ], function (err) {
+        assert.ifError(err);
+        done();
       });
     });
 

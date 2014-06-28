@@ -9,6 +9,7 @@
     "lodash": "^2.4.1"
   },
   "devDependencies": {
+    "async": "^0.9.0",
     "mocha": "*",
     "redis": "^0.10.3"
   },
