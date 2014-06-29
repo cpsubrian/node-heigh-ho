@@ -216,11 +216,37 @@ describe('Queue', function () {
       });
     });
 
-    it('can process items added to the queue', function (done) {
+    it('can process and item added to the queue', function (done) {
+      var handled = false
+        , payload = idgen();
+
       queue.process(function (job, cb) {
-        cb();
+        if (job.payload === payload) handled = true;
+        queue.count('pending', function (err, count) {
+          assert.ifError(err);
+          assert.equal(count, 0);
+          queue.count('active', function (err, count) {
+            assert.ifError(err);
+            assert.equal(count, 1);
+            cb(null, 'handled');
+          });
+        });
       });
-      done();
+
+      added = queue.add(payload);
+
+      queue.on('processed', function (job, result) {
+        assert(handled);
+        assert.equal(job.id, added.id);
+        assert.equal(job.source.id, queue.id);
+        assert.equal(result, 'handled');
+
+        queue.count('complete', function (err, count) {
+          assert.ifError(err);
+          assert.equal(count, 1);
+          done();
+        });
+      });
     });
   });
 });

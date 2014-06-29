@@ -1,13 +1,12 @@
 heighho = require('../');
 assert = require('assert');
 async = require('async');
-
-var idgen = require('idgen');
-var exec = require('child_process').exec;
+idgen = require('idgen');
+exec = require('child_process').exec;
 
 createTestQueue = function (done) {
   var queue = heighho(idgen(), {
-    prefix: 'heigh-ho-test'
+    prefix: 'heigh-ho:test:'
   });
   queue.on('ready', done);
   return queue;
