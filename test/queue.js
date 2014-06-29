@@ -216,7 +216,7 @@ describe('Queue', function () {
       });
     });
 
-    it('can process and item added to the queue', function (done) {
+    it('can process an item added to the queue', function (done) {
       var handled = false
         , payload = idgen();
 
@@ -246,6 +246,24 @@ describe('Queue', function () {
           assert.equal(count, 1);
           done();
         });
+      });
+    });
+
+    it('can process an item already in the queue', function (done) {
+      var handled = false
+        , payload = idgen()
+        , added = queue.add(payload);
+
+      added.on('added', function () {
+        queue.process(function (job, cb) {
+          if (job.payload === payload) handled = true;
+          cb();
+        });
+      });
+
+      queue.on('processed', function (job, result) {
+        assert(handled);
+        done();
       });
     });
   });
