@@ -74,7 +74,7 @@ describe('Queue', function () {
 
     it('can create and load a job', function (done) {
       job = queue.add('job1');
-      job.on('added', function (status) {
+      job.on('pending', function (status) {
         assert.equal(status, 'pending');
         assert(typeof job.id !== 'undefined');
         queue.load(job.id, function (err, loaded) {
@@ -89,7 +89,7 @@ describe('Queue', function () {
       job = queue.add('job1');
       job = queue.add('job2');
       job = queue.add('job3');
-      job.on('added', function () {
+      job.on('pending', function () {
         queue.count(function (err, count) {
           assert.ifError(err);
           assert.equal(count, 3);
@@ -102,7 +102,7 @@ describe('Queue', function () {
       job = queue.add('job1');
       job = queue.add('job2');
       job = queue.add('job3');
-      job.on('added', function (status) {
+      job.on('pending', function (status) {
         queue.empty(function (err) {
           assert.ifError(err);
           queue.count(function (err, count) {
@@ -129,7 +129,7 @@ describe('Queue', function () {
           job = queue.add('job1');
           job = queue.add('job2');
           job = queue.add('job3');
-          job.on('added', function (status) {
+          job.on('pending', function (status) {
             assert.equal(status, 'pending');
             next();
           });
@@ -165,7 +165,7 @@ describe('Queue', function () {
         // Make sure new items get paused.
         function (next) {
           job = queue.add('job4');
-          job.on('added', function (status) {
+          job.on('pending', function (status) {
             assert.equal(status, 'paused');
             queue.count('pending', function (err, count) {
               assert.ifError(err);
@@ -197,7 +197,7 @@ describe('Queue', function () {
         // Make sure new items get added to pending.
         function (next) {
           job = queue.add('job6');
-          job.on('added', function (status) {
+          job.on('pending', function (status) {
             assert.equal(status, 'pending');
             queue.count('paused', function (err, count) {
               assert.ifError(err);
@@ -235,7 +235,7 @@ describe('Queue', function () {
 
       added = queue.add(payload);
 
-      queue.on('processed', function (job, result) {
+      added.on('complete', function (job, result) {
         assert(handled);
         assert.equal(job.id, added.id);
         assert.equal(job.source.id, queue.id);
@@ -254,14 +254,14 @@ describe('Queue', function () {
         , payload = idgen()
         , added = queue.add(payload);
 
-      added.on('added', function () {
+      added.on('pending', function () {
         queue.process(function (job, cb) {
           if (job.payload === payload) handled = true;
           cb();
         });
       });
 
-      queue.on('processed', function (job, result) {
+      added.on('complete', function (job, result) {
         assert(handled);
         done();
       });
