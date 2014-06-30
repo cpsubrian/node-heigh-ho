@@ -49,7 +49,7 @@ The basic usage example below should get you started.
 ```js
 // Create a queue.
 var heighho = require('heigh-ho')
-  , queue = heighho('my:job:name', {
+  , queue = heighho('my:queue:name', {
       host: 'localhost', // default
       port: 6379, // default
     });
