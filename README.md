@@ -27,6 +27,7 @@ Todo:
   could occur (multi-process with queue contention).
 - Write benchmarks so we have a rough idea of baseline concurrency (and
   possibly investigate speed improvements).
+- How to support `haredis`?
 
 - - -
 
@@ -48,8 +49,10 @@ The basic usage example below should get you started.
 ```js
 // Create a queue.
 var heighho = require('heigh-ho')
-  , redisClient = require('haredis').createClient()
-  , queue = heighho('my:job:name', {client: redisClient});
+  , queue = heighho('my:job:name', {
+      host: 'localhost', // default
+      port: 6379, // default
+    });
 
 // Process a job.
 queue.process(function (job, done) {
@@ -73,8 +76,15 @@ queue.process(function (job, done) {
 queue.add({my: 'data'});
 
 // Enqueue a job and respond to errors or results.
-queue.add({more: 'dataz'}, function (err, result) {
-
+var job = queue.add({more: 'dataz'});
+job.on('error', function (err) {
+  // There was an internal error with the job.
+});
+job.on('fail', function (err) {
+  // The job failed to process.
+});
+job.on('complete', function (result) {
+  // Do something with the result.
 });
 ```
 
@@ -82,9 +92,7 @@ Alternatively, if you want to create several queues from a set of default option
 
 ```js
 // Create the queues.
-var heighho = require('heigh-ho')
-  , redis = require('redis').createClient()
-  , queue = heighho({client: redis})
+var queue = require('heigh-ho')(/* using defaults */)
   , videos = queue('videos')
   , images = queue('images');
 
