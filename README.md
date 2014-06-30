@@ -1,11 +1,44 @@
 Heigh Ho!
 =========
 
-A redis-backed message/job queue. API inspired by `bull`.
+A redis-backed message/job queue. Originally inspired by `bull`.
 
 [![build status](https://secure.travis-ci.org/cpsubrian/node-heigh-ho.png)](http://travis-ci.org/cpsubrian/node-heigh-ho)
 
 ![Hard Working Little People](https://camo.githubusercontent.com/dfda20e32d2bf70ff3e8070239c46e7b9101fad1/687474703a2f2f7777772e77616765686f7572696e7369676874732e636f6d2f4865696768253230486f2e6a7067)
+
+Status: WIP
+-----------
+
+Todo:
+
+- Rethink events and API for jobs:
+  - Should we just emit 'error', 'end', and 'change' events and attach
+    more specific metadata? ('failed', 'complete', 'paused', results, etc.)
+  - We currently have some inconsistency of when you MUST provide a callback, when
+    its optional, and when only events are supported. Need to make sure the
+    API feels natural.
+- For inter-process communication RE event complete/fail, need to implement
+  an acknowlegement system so pub/sub messages that get dropped are accounted
+  for.
+- Better tests for job errors & failures. Make sure items are removed from the
+  queue and that the owning queue process gets a chance to handle the failure.
+- Attempt to write tests that simulate conditions where race conditions
+  could occur (multi-process with queue contention).
+- Write benchmarks so we have a rough idea of baseline concurrency (and
+  possibly investigate speed improvements).
+
+- - -
+
+Features
+--------
+
+- Full support for multi-process queue workers, creators.
+  - Includes pub/sub-backed job notifications and resolution of job events
+    (error/complete/changes) to their originating processes.
+- Job handlers can send arbitrary 'results' back to the origin of the job. This
+  allows for a sort of RPC, where you can offload the work but still respond
+  to the result or any status changes (such as rendering a progress bar).
 
 Example
 -------
