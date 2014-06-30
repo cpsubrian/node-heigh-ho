@@ -235,12 +235,9 @@ describe('Queue', function () {
 
       added = queue.add(payload);
 
-      queue.on('complete', function (job, result) {
+      added.on('complete', function (result) {
         assert(handled);
-        assert.equal(job.id, added.id);
-        assert.equal(job.source.id, queue.id);
         assert.equal(result, 'handled');
-
         queue.count('complete', function (err, count) {
           assert.ifError(err);
           assert.equal(count, 1);
@@ -261,7 +258,7 @@ describe('Queue', function () {
         });
       });
 
-      queue.on('complete', function (job, result) {
+      added.on('complete', function (result) {
         assert(handled);
         done();
       });
